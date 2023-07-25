@@ -34,7 +34,7 @@ const EXPLORE_SECTION_PROBLEM = 1;
 let difficulty = '';
 
 /* state of upload for progress */
-let uploadState = { uploading: false };
+const uploadState = { uploading: false };
 
 /* Get file extension for submission */
 function findLanguage() {
@@ -67,7 +67,7 @@ const upload = (
   cb = undefined,
 ) => {
   // To validate user, load user object from GitHub.
-  const URL = `https://api.github.com/repos/${hook}/contents/${directory}/${filename}`;
+  const URL = `https://api.github.com/repos/${hook}/contents/LeetCode/${difficulty}/${directory}/${filename}`;
 
   /* Define Payload */
   let data = {
@@ -137,7 +137,7 @@ const update = (
   prepend,
   cb = undefined,
 ) => {
-  const URL = `https://api.github.com/repos/${hook}/contents/${directory}/README.md`;
+  const URL = `https://api.github.com/repos/${hook}/contents/LeetCode/${difficulty}/${directory}/README.md`;
 
   /* Read from existing file on GitHub */
   const xhr = new XMLHttpRequest();
@@ -267,14 +267,14 @@ function findCode(
   cb = undefined,
 ) {
   /* Get the submission details url from the submission page. */
-  var submissionURL;
+  let submissionURL;
   const e = document.getElementsByClassName('status-column__3SUg');
   if (checkElem(e)) {
     // for normal problem submisson
     const submissionRef = e[1].innerHTML.split(' ')[1];
-    submissionURL =
-      'https://leetcode.com' +
-      submissionRef.split('=')[1].slice(1, -1);
+    submissionURL = `https://leetcode.com${submissionRef
+      .split('=')[1]
+      .slice(1, -1)}`;
   } else {
     // for a submission in explore section
     const submissionRef = document.getElementById('result-state');
@@ -287,27 +287,27 @@ function findCode(
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         /* received submission details as html reponse. */
-        var doc = new DOMParser().parseFromString(
+        const doc = new DOMParser().parseFromString(
           this.responseText,
           'text/html',
         );
         /* the response has a js object called pageData. */
         /* Pagedata has the details data with code about that submission */
-        var scripts = doc.getElementsByTagName('script');
-        for (var i = 0; i < scripts.length; i++) {
-          var text = scripts[i].innerText;
+        const scripts = doc.getElementsByTagName('script');
+        for (let i = 0; i < scripts.length; i++) {
+          const text = scripts[i].innerText;
           if (text.includes('pageData')) {
             /* Considering the pageData as text and extract the substring
             which has the full code */
-            var firstIndex = text.indexOf('submissionCode');
-            var lastIndex = text.indexOf('editCodeUrl');
-            var slicedText = text.slice(firstIndex, lastIndex);
+            const firstIndex = text.indexOf('submissionCode');
+            const lastIndex = text.indexOf('editCodeUrl');
+            let slicedText = text.slice(firstIndex, lastIndex);
             /* slicedText has code as like as. (submissionCode: 'Details code'). */
             /* So finding the index of first and last single inverted coma. */
-            var firstInverted = slicedText.indexOf("'");
-            var lastInverted = slicedText.lastIndexOf("'");
+            const firstInverted = slicedText.indexOf("'");
+            const lastInverted = slicedText.lastIndexOf("'");
             /* Extract only the code */
-            var codeUnicoded = slicedText.slice(
+            const codeUnicoded = slicedText.slice(
               firstInverted + 1,
               lastInverted,
             );
@@ -414,12 +414,12 @@ function getProblemNameSlug() {
   );
   let questionTitle = 'unknown-problem';
   if (checkElem(questionElem)) {
-    let qtitle = document.getElementsByClassName('css-v3d350');
+    const qtitle = document.getElementsByClassName('css-v3d350');
     if (checkElem(qtitle)) {
       questionTitle = qtitle[0].innerHTML;
     }
   } else if (checkElem(questionDescriptionElem)) {
-    let qtitle = document.getElementsByClassName('question-title');
+    const qtitle = document.getElementsByClassName('question-title');
     if (checkElem(qtitle)) {
       questionTitle = qtitle[0].innerText;
     }
@@ -429,7 +429,7 @@ function getProblemNameSlug() {
 
 function addLeadingZeros(title) {
   const maxTitlePrefixLength = 4;
-  var len = title.split('-')[0].length;
+  const len = title.split('-')[0].length;
   if (len < maxTitlePrefixLength) {
     return '0'.repeat(4 - len) + title;
   }
@@ -438,7 +438,7 @@ function addLeadingZeros(title) {
 
 /* Parser function for the question and tags */
 function parseQuestion() {
-  var questionUrl = window.location.href;
+  let questionUrl = window.location.href;
   if (questionUrl.endsWith('/submissions/')) {
     questionUrl = questionUrl.substring(
       0,
@@ -477,7 +477,8 @@ function parseQuestion() {
     // Final formatting of the contents of the README for each problem
     const markdown = `<h2><a href="${questionUrl}">${qtitle}</a></h2><h3>${difficulty}</h3><hr>${qbody}`;
     return markdown;
-  } else if (checkElem(questionDescriptionElem)) {
+  }
+  if (checkElem(questionDescriptionElem)) {
     let questionTitle = document.getElementsByClassName(
       'question-title',
     );
@@ -584,13 +585,13 @@ function getNotesIfAny() {
 }
 
 const loader = setInterval(() => {
-  let code = null;
+  const code = null;
   let probStatement = null;
   let probStats = null;
   let probType;
   const successTag = document.getElementsByClassName('success__3Ai7');
   const resultState = document.getElementById('result-state');
-  var success = false;
+  let success = false;
   // check success tag for a normal problem
   if (
     checkElem(successTag) &&
@@ -689,9 +690,9 @@ const loader = setInterval(() => {
           'upload',
           // callback is called when the code upload to git is a success
           () => {
-            if (uploadState['countdown'])
-              clearTimeout(uploadState['countdown']);
-            delete uploadState['countdown'];
+            if (uploadState.countdown)
+              clearTimeout(uploadState.countdown);
+            delete uploadState.countdown;
             uploadState.uploading = false;
             markUploaded();
           },
@@ -705,7 +706,7 @@ const loader = setInterval(() => {
 /* we will start 10 seconds counter and even after that upload is not complete, then we conclude its failed */
 function startUploadCountDown() {
   uploadState.uploading = true;
-  uploadState['countdown'] = setTimeout(() => {
+  uploadState.countdown = setTimeout(() => {
     if ((uploadState.uploading = true)) {
       // still uploading, then it failed
       uploadState.uploading = false;
@@ -738,13 +739,13 @@ function insertToAnchorElement(elem) {
       if (target.childNodes.length > 0)
         target.childNodes[0].prepend(elem);
     }
-  } else {
-    if (checkElem(document.getElementsByClassName('action__38Xc'))) {
-      target = document.getElementsByClassName('action__38Xc')[0];
-      elem.className = 'runcode-wrapper__8rXm';
-      if (target.childNodes.length > 0)
-        target.childNodes[0].prepend(elem);
-    }
+  } else if (
+    checkElem(document.getElementsByClassName('action__38Xc'))
+  ) {
+    target = document.getElementsByClassName('action__38Xc')[0];
+    elem.className = 'runcode-wrapper__8rXm';
+    if (target.childNodes.length > 0)
+      target.childNodes[0].prepend(elem);
   }
 }
 
