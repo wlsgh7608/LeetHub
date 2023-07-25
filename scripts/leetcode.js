@@ -651,13 +651,13 @@ const loader = setInterval(() => {
         /* Only create README if not already created */
         if (sha === null) {
           /* @TODO: Change this setTimeout to Promise */
-          uploadGit(
-            btoa(unescape(encodeURIComponent(probStatement))),
-            problemName,
-            'README.md',
-            readmeMsg,
-            'upload',
-          );
+          // uploadGit(
+          //   btoa(unescape(encodeURIComponent(probStatement))),
+          //   problemName,
+          //   'README.md',
+          //   readmeMsg,
+          //   'upload',
+          // );
         }
       });
 
@@ -669,13 +669,13 @@ const loader = setInterval(() => {
           if (notes != undefined && notes.length != 0) {
             console.log('Create Notes');
             // means we can upload the notes too
-            uploadGit(
-              btoa(unescape(encodeURIComponent(notes))),
-              problemName,
-              'NOTES.md',
-              createNotesMsg,
-              'upload',
-            );
+            // uploadGit(
+            //   btoa(unescape(encodeURIComponent(notes))),
+            //   problemName,
+            //   'NOTES.md',
+            //   createNotesMsg,
+            //   'upload',
+            // );
           }
         }, 500);
       }
