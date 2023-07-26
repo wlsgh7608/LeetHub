@@ -33,6 +33,8 @@ const EXPLORE_SECTION_PROBLEM = 1;
 /* Difficulty of most recenty submitted question */
 let difficulty = '';
 
+/* question title */
+let qtitle = '';
 /* state of upload for progress */
 const uploadState = { uploading: false };
 
@@ -455,7 +457,7 @@ function parseQuestion() {
     const qbody = questionElem[0].innerHTML;
 
     // Problem title.
-    let qtitle = document.getElementsByClassName('css-v3d350');
+    qtitle = document.getElementsByClassName('css-v3d350');
     if (checkElem(qtitle)) {
       qtitle = qtitle[0].innerHTML;
     } else {
@@ -509,7 +511,10 @@ function parseStats() {
   const spacePercentile = probStats[3].textContent;
 
   // Format commit message
-  return `Time: ${time} (${timePercentile}), Space: ${space} (${spacePercentile}) - LeetHub`;
+  return `[${difficulty}] Time: ${time} (${timePercentile}), Memory: ${space} (${spacePercentile}) - LeetHub`;
+
+  /* 문제 이름까지 커밋하고 싶으면 아래 코드를 주석해제하세요. */
+  // return `[${difficulty}] Title: ${qtitle}, Time: ${time} (${timePercentile}), Memory: ${space} (${spacePercentile}) - LeetHub`;
 }
 
 document.addEventListener('click', (event) => {
